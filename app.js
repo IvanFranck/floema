@@ -3,12 +3,22 @@ import * as prismic from '@prismicio/client'
 import dotenv from 'dotenv'
 import express from 'express'
 import * as path from 'path'
+import logger from "morgan"
+import errorHandler from 'errorhandler'
+import bodyParser from 'body-parser'
+import methodOverride from "method-override"
 
 dotenv.config()
 const app = express()
 const port = process.env.PORT
 const currentFilePath = new URL(import.meta.url).pathname;
 const currentDirectory = path.dirname(currentFilePath);
+
+app.use(logger('dev'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(methodOverride)
+app.use(errorHandler())
 
 app.use((req, res, next) => {
   res.locals.ctx = {
