@@ -6,7 +6,7 @@ import * as path from 'path'
 
 dotenv.config()
 const app = express()
-const port = 3000
+const port = process.env.PORT
 const currentFilePath = new URL(import.meta.url).pathname;
 const currentDirectory = path.dirname(currentFilePath);
 
@@ -40,8 +40,13 @@ app.get('/collections', (req, res) => {
   res.render('pages/collections')
 })
 
-app.get('/detail/:uid', (req, res) => {
-  res.render('pages/detail')
+app.get('/detail/:uid', async (req, res) => {
+  const uid = req.params.uid
+  const product = await client.getByUID('product', uid, {
+    fetchLinks: 'collection.title'
+  })
+  console.log("product:", product.data.informations)
+  res.render('pages/detail', { product })
 })
 
 app.listen(port, () => {
