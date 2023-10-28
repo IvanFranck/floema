@@ -4,7 +4,7 @@ import * as prismic from '@prismicio/client'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const repoName = 'ivan-floema'
+const repoName = process.env.PRISMIC_REPO_NAME
 const accessToken = process.env.PRISMIC_ACCESS_TOKEN
 
 // The `routes` property is your route resolver. It defines how you will
@@ -14,6 +14,7 @@ const accessToken = process.env.PRISMIC_ACCESS_TOKEN
 const routes = [
   {
     type: 'preloader',
+    uid: 'Preloader',
     path: '/:uid'
   }
 ]

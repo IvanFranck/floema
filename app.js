@@ -20,13 +20,20 @@ app.use((req, res, next) => {
 app.set('views', path.join(currentDirectory, 'views'))
 app.set('view engine', 'pug')
 
-app.get('/', async (req, res) => {
-  const document = await client.getFirst()
-  res.render('pages/home', { document })
+
+app.get('*', async (req, res, next) => {
+  const meta = await client.getSingle('meta')
+  res.locals.meta = { ...meta }
+  next()
 })
 
-app.get('/about', (req, res) => {
-  res.render('pages/about')
+app.get('/', async (req, res) => {
+  res.render('pages/home')
+})
+
+app.get('/about', async (req, res) => {
+  const about = await client.getSingle('about')
+  res.render('pages/about', { about })
 })
 
 app.get('/collections', (req, res) => {
