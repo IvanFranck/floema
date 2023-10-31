@@ -19,10 +19,29 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(errorHandler())
 
 const handleLinkResolver = (doc) => {
-  console.log(doc)
+  if (doc.type === 'product') {
+    return `/detail/${doc.slug}`
+  }
 
+  if (doc.type === 'about')
+    return '/about'
+
+  if (doc.type === 'collections')
+    return '/collections'
 
   return '/'
+}
+
+const handleRequest = async () => {
+  const meta = await client.getSingle('meta')
+  const preloader = await client.getSingle('preloader')
+  const navigation = await client.getSingle('navigation')
+
+  return {
+    meta,
+    preloader,
+    navigation
+  }
 }
 
 app.use((req, res, next) => {
@@ -45,41 +64,37 @@ app.set('views', path.join(currentDirectory, 'views'))
 app.set('view engine', 'pug')
 
 app.get('/', async (req, res) => {
-  const meta = await client.getSingle('meta')
-  const preloader = await client.getSingle('preloader')
+  const defaults = await handleRequest()
   const home = await client.getSingle('home')
   const collections = await client.getAllByType('collection')
-  res.render('pages/home', { preloader, meta, home, collections })
+
+  res.render('pages/home', { ...defaults, home, collections })
 })
 
 app.get('/about', async (req, res) => {
-  const meta = await client.getSingle('meta')
+  const defaults = await handleRequest()
+
   const about = await client.getSingle('about')
-  const preloader = await client.getSingle('preloader')
-  res.render('pages/about', { about, preloader, meta })
+  res.render('pages/about', { about, ...defaults })
 })
 
 app.get('/collections', async (req, res) => {
-  const home = await client.getSingle('home')
-  const preloader = await client.getSingle('preloader')
-  const meta = await client.getSingle('meta')
+  const defaults = await handleRequest()
 
+  const home = await client.getSingle('home')
   const collections = await client.getAllByType('collection', {
     fetchLinks: 'product.image'
   })
-  // console.log("preloader", preloader)
-  // console.log(collections[0].data)
-  res.render('pages/collections', { collections, home, preloader, meta })
+  res.render('pages/collections', { collections, home, ...defaults })
 })
 
 app.get('/detail/:uid', async (req, res) => {
   const uid = req.params.uid
+  const defaults = await handleRequest()
   const product = await client.getByUID('product', uid, {
     fetchLinks: 'collection.title'
   })
-  const meta = await client.getSingle('meta')
-  const preloader = await client.getSingle('preloader')
-  res.render('pages/detail', { product, preloader, meta })
+  res.render('pages/detail', { product, ...defaults })
 })
 
 app.listen(port, () => {
