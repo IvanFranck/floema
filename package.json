@@ -7,7 +7,7 @@
   "scripts": {
     "backend:build": "node app.js",
     "backend:development": "nodemon app.js",
-    "frontend:build": "webpack --progress --config webpack.config.build.js",
+    "frontend:build": "webpack --progress --config webpack.config.build.cjs",
     "frontend:development": "webpack-dev-server --progress --config webpack.config.development.cjs",
     "start": "concurrently --kill-others \"npm run backend:development\" \"npm run frontend:development\""
   },
