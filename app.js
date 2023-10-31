@@ -3,30 +3,41 @@ import * as prismic from '@prismicio/client'
 import dotenv from 'dotenv'
 import express from 'express'
 import * as path from 'path'
-import logger from "morgan"
+import logger from 'morgan'
 import errorHandler from 'errorhandler'
 import bodyParser from 'body-parser'
-import methodOverride from "method-override"
 
 dotenv.config()
 const app = express()
 const port = process.env.PORT
-const currentFilePath = new URL(import.meta.url).pathname;
-const currentDirectory = path.dirname(currentFilePath);
+const currentFilePath = new URL(import.meta.url).pathname
+const currentDirectory = path.dirname(currentFilePath)
 
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(methodOverride)
 app.use(errorHandler())
 
+const handleLinkResolver = (doc) => {
+  console.log(doc)
+
+
+  return '/'
+}
+
 app.use((req, res, next) => {
+  //register prismic in the locals ctx object
   res.locals.ctx = {
     prismic
   }
+
+  // register the Collection's numbers resolver function in the locals object
   res.locals.Numbers = index => {
     return index === 0 ? 'One' : index === 1 ? 'Two' : index === 2 ? 'Three' : index === 3 ? 'Four' : ''
   }
+
+  // register link resolver function in the locals object
+  res.locals.Link = handleLinkResolver
   next()
 })
 
@@ -36,7 +47,9 @@ app.set('view engine', 'pug')
 app.get('/', async (req, res) => {
   const meta = await client.getSingle('meta')
   const preloader = await client.getSingle('preloader')
-  res.render('pages/home', { preloader, meta })
+  const home = await client.getSingle('home')
+  const collections = await client.getAllByType('collection')
+  res.render('pages/home', { preloader, meta, home, collections })
 })
 
 app.get('/about', async (req, res) => {
