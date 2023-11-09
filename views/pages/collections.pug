@@ -15,12 +15,12 @@ block content
         .collections__gallery__wrapper
           each collection in collections
             each item in collection.data.products
-              a.collection__gallery__link(href=Link(item.products_product))
-                figure.collection__gallery__media
-                  image.collection__gallery__media__image(alt=item.products_product.data.image.alt src=item.products_product.data.image.url)
+              a.collections__gallery__link(href=Link(item.products_product))
+                figure.collections__gallery__media
+                  image.collections__gallery__media__image(alt=item.products_product.data.image.alt src=item.products_product.data.image.url)
 
       .collections__content
         each collection in collections
-          article.collections_article
+          article.collections__article
             h2.collections__article__title=`${collection.data.title} ${home.data.collection}`
             p.collections__article__description=collection.data.description

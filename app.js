@@ -17,6 +17,7 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(errorHandler())
+app.use(express.static(path.join(currentDirectory, 'public')))
 
 const handleLinkResolver = (doc) => {
   if (doc.type === 'product') {
