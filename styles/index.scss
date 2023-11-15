@@ -1,3 +1,4 @@
+@import './base/reset';
 // utils
 @import './utils/variables';
 @import './utils/function';
@@ -9,11 +10,12 @@
 @import './shared/titles';
 @import './shared/descriptions';
 
-
 // base
 @import './base/fonts';
-@import './base/reset';
 @import './base/base';
+
+// components
+@import './components/preloader';
 
 // pages
 @import './pages/about/about';

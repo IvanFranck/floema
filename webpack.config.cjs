@@ -1,7 +1,10 @@
+__webpack_public_path__ = '/'
+
 const path = require('path')
 const webpack = require('webpack')
 
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
@@ -44,8 +47,10 @@ module.exports = {
 
     new MiniCssExtractPlugin({
       filename: '[name].css',
-      chunkFilename: '[id].css'
-    })
+      chunkFilename: '[id].css',
+    }),
+
+    new CleanWebpackPlugin()
   ],
 
   module: {
@@ -81,10 +86,7 @@ module.exports = {
 
       {
         test: /\.(jpe?g|png|gif|svg|woff2?|fnt|webp)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[hash].[ext]'
-        }
+        type: 'asset/resource'
       },
 
       {
@@ -94,7 +96,7 @@ module.exports = {
 
       {
         test: /\.(glsl|frag|vert)$/,
-        loader: 'raw-loader',
+        type: 'asset/source',
         exclude: /node_modules/
       },
 

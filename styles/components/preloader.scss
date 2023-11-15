@@ -1,9 +1,17 @@
 .preloader{
+  @extend %cover;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .preloader__text{
+  @extend %title-53;
 
+  max-width: 66rem;
 }
 .preloader__number{
-
+  position: absolute;
+  bottom: 0%;
 }
